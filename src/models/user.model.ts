@@ -37,7 +37,6 @@ const UserSchema = new Schema<IUserDocument>(
       type: Number,
       required: true,
       unique: true,
-      index: true,
     },
     username: {
       type: String,
