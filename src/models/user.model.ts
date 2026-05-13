@@ -72,7 +72,4 @@ const UserSchema = new Schema<IUserDocument>(
   },
 );
 
-// Index on updatedAt for efficient daily draw filtering
-UserSchema.index({ updatedAt: 1 });
-
 export const UserModel = model<IUserDocument>('User', UserSchema);

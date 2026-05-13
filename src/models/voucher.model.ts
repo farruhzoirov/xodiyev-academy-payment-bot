@@ -14,7 +14,7 @@ const VoucherParticipantSchema = new Schema<IVoucherParticipant>(
     username: { type: String },
     fullName: { type: String, required: true },
     phoneNumber: { type: String, default: '' },
-    registeredAt: { type: Date, index: true },
+    registeredAt: { type: Date },
   },
   { timestamps: true },
 );
