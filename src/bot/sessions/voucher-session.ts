@@ -1,9 +1,10 @@
-// Tracks which users are awaiting their name input after /voucher.
-// In-memory is fine — registration is a single-message exchange.
-const pendingVoucher = new Set<number>();
+type VoucherStep = 'WAITING_NAME' | 'WAITING_PHONE';
+
+const pending = new Map<number, VoucherStep>();
 
 export const voucherSession = {
-  add: (telegramId: number) => pendingVoucher.add(telegramId),
-  has: (telegramId: number) => pendingVoucher.has(telegramId),
-  remove: (telegramId: number) => pendingVoucher.delete(telegramId),
+  set: (telegramId: number, step: VoucherStep) => pending.set(telegramId, step),
+  get: (telegramId: number) => pending.get(telegramId),
+  has: (telegramId: number) => pending.has(telegramId),
+  remove: (telegramId: number) => pending.delete(telegramId),
 };

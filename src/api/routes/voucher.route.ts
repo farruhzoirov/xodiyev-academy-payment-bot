@@ -12,7 +12,11 @@ router.get('/random-user', async (_req: Request, res: Response): Promise<void> =
     todayEnd.setHours(23, 59, 59, 999);
 
     const todaysParticipants = await VoucherParticipantModel.find(
-      { registeredAt: { $gte: todayStart, $lte: todayEnd } },
+      {
+        registeredAt: { $gte: todayStart, $lte: todayEnd },
+        fullName: { $exists: true, $ne: '' },
+        phoneNumber: { $exists: true, $ne: '' },
+      },
       { fullName: 1, _id: 0 },
     );
 
