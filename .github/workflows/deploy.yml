@@ -35,7 +35,15 @@ jobs:
           script: |
             set -e
 
-            cd /var/www/xodiyev-academy-payment-bot
+            APP_DIR=/var/www/xodiyev-academy-payment-bot
+
+            if [ ! -d "$APP_DIR" ]; then
+              echo "Cloning repository..."
+              mkdir -p /var/www
+              git clone https://github.com/farruhzoirov/xodiyev-academy-payment-bot.git "$APP_DIR"
+            fi
+
+            cd "$APP_DIR"
 
             echo "Writing .env..."
             cat > .env <<ENV
