@@ -31,10 +31,19 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
+          envs: BOT_TOKEN,MONGO_URI,API_PORT,PM2_INSTANCES
           script: |
             set -e
 
             cd /var/www/xodiyev-academy-payment-bot
+
+            echo "Writing .env..."
+            cat > .env <<ENV
+            BOT_TOKEN=${BOT_TOKEN}
+            MONGO_URI=${MONGO_URI}
+            API_PORT=${API_PORT}
+            PM2_INSTANCES=${PM2_INSTANCES}
+            ENV
 
             echo "Pulling latest changes..."
             git pull origin main
@@ -52,3 +61,8 @@ jobs:
             pm2 save
 
             echo "Deploy complete."
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          API_PORT: ${{ secrets.API_PORT }}
+          PM2_INSTANCES: ${{ vars.PM2_INSTANCES }}

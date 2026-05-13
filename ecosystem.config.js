@@ -20,7 +20,6 @@ module.exports = {
 
       env_production: {
         NODE_ENV: 'production',
-        PM2_INSTANCES: '1',
       },
     },
   ],
