@@ -4,8 +4,6 @@ import { UserModel } from '../../models/user.model';
 import { UserState } from '../../types';
 import { phoneKeyboard } from '../keyboards/phone.keyboard';
 import { logMessage } from '../helpers/log-message';
-import { voucherNameHandler } from './voucher.handler';
-import { voucherSession } from '../sessions/voucher-session';
 
 export async function messageHandler(ctx: Context): Promise<void> {
   const telegramId = ctx.from?.id;
@@ -15,12 +13,6 @@ export async function messageHandler(ctx: Context): Promise<void> {
   if (!msg || !('text' in msg)) return;
 
   const text = msg.text.trim();
-
-  // Voucher flow takes priority if user is in pending state
-  if (voucherSession.has(telegramId)) {
-    await voucherNameHandler(ctx);
-    return;
-  }
 
   await logMessage(telegramId, 'user', text);
 

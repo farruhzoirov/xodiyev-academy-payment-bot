@@ -24,7 +24,6 @@ export interface IUser {
   phoneNumber: string;
   files: IFile[];
   completedAt?: Date;
-  isVoucherParticipant: boolean;
   state: UserState;
   messages: IMessage[];
   createdAt: Date;

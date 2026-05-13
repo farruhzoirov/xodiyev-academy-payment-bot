@@ -7,7 +7,6 @@ router.get('/random-user', async (_req: Request, res: Response): Promise<void> =
   try {
     const participants = await UserModel.find(
       {
-        isVoucherParticipant: true,
         fullName: { $exists: true, $ne: '' },
         phoneNumber: { $exists: true, $ne: '' },
       },
@@ -15,7 +14,7 @@ router.get('/random-user', async (_req: Request, res: Response): Promise<void> =
     );
 
     if (participants.length === 0) {
-      res.status(404).json({ message: 'Hali hech kim voucher o\'yiniga ro\'yxatdan o\'tmagan.' });
+      res.status(404).json({ message: 'Hali hech kim ro\'yxatdan o\'tmagan.' });
       return;
     }
 

@@ -56,11 +56,6 @@ const UserSchema = new Schema<IUserDocument>(
     completedAt: {
       type: Date,
     },
-    isVoucherParticipant: {
-      type: Boolean,
-      default: false,
-      index: true,
-    },
     state: {
       type: String,
       enum: Object.values(UserState),

@@ -3,8 +3,6 @@ import { Message } from 'telegraf/typings/core/types/typegram';
 import { UserModel } from '../../models/user.model';
 import { UserState } from '../../types';
 import { logMessage } from '../helpers/log-message';
-import { voucherSession } from '../sessions/voucher-session';
-import { voucherContactHandler } from './voucher.handler';
 
 export async function contactHandler(ctx: Context): Promise<void> {
   const telegramId = ctx.from?.id;
@@ -12,12 +10,6 @@ export async function contactHandler(ctx: Context): Promise<void> {
 
   const msg = ctx.message as Message.ContactMessage | undefined;
   if (!msg || !('contact' in msg)) return;
-
-  // Voucher flow takes priority
-  if (voucherSession.get(telegramId) === 'WAITING_PHONE') {
-    await voucherContactHandler(ctx);
-    return;
-  }
 
   const phoneNumber = msg.contact.phone_number;
 
