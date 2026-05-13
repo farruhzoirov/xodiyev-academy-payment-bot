@@ -74,8 +74,7 @@ jobs:
             npm run build
 
             echo "Restarting PM2..."
-            pm2 restart ecosystem.config.js --update-env \
-              || pm2 start ecosystem.config.js --env production
+            pm2 startOrRestart ecosystem.config.js --update-env
 
             pm2 save
 
