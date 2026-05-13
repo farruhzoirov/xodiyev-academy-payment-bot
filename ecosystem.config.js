@@ -1,8 +1,7 @@
-// PM2_INSTANCES controls how many processes to spawn.
-// Keep at 1 for Telegram long-polling mode — multiple instances
-// would each receive duplicate updates from Telegram's API.
-// Scale > 1 only when switching to webhook mode.
+// PM2_INSTANCES  — number of processes (keep 1 for long-polling mode)
+// WORKER_THREADS — libuv thread pool size for file I/O (UV_THREADPOOL_SIZE)
 const instances = parseInt(process.env.PM2_INSTANCES || '1', 10);
+const workerThreads = parseInt(process.env.WORKER_THREADS || '4', 10);
 
 module.exports = {
   apps: [
@@ -20,6 +19,7 @@ module.exports = {
 
       env_production: {
         NODE_ENV: 'production',
+        UV_THREADPOOL_SIZE: workerThreads,
       },
     },
   ],

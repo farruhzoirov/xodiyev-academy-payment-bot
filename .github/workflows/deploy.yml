@@ -31,7 +31,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
-          envs: BOT_TOKEN,MONGO_URI,API_PORT,PM2_INSTANCES
+          envs: BOT_TOKEN,MONGO_URI,API_PORT,PM2_INSTANCES,WORKER_THREADS
           script: |
             set -e
 
@@ -61,6 +61,7 @@ jobs:
             MONGO_URI=${MONGO_URI}
             API_PORT=${API_PORT}
             PM2_INSTANCES=${PM2_INSTANCES}
+            WORKER_THREADS=${WORKER_THREADS}
             ENV
 
             echo "Pulling latest changes..."
@@ -84,3 +85,4 @@ jobs:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           API_PORT: ${{ secrets.API_PORT }}
           PM2_INSTANCES: ${{ vars.PM2_INSTANCES }}
+          WORKER_THREADS: ${{ vars.WORKER_THREADS }}
