@@ -35,6 +35,16 @@ jobs:
           script: |
             set -e
 
+            # Load Node.js — try nvm first, then system path
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            # Install Node.js 20 via NodeSource if still not found
+            if ! command -v npm &>/dev/null; then
+              curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+              apt-get install -y nodejs
+            fi
+
             APP_DIR=/var/www/xodiyev-academy-payment-bot
 
             if [ ! -d "$APP_DIR" ]; then
