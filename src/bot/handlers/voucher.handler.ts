@@ -1,6 +1,6 @@
 import { Context } from 'telegraf';
 import { Message } from 'telegraf/typings/core/types/typegram';
-import { VoucherParticipantModel } from '../../models/voucher.model';
+import { UserModel } from '../../models/user.model';
 import { voucherSession } from '../sessions/voucher-session';
 import { phoneKeyboard } from '../keyboards/phone.keyboard';
 
@@ -24,7 +24,7 @@ export async function voucherNameHandler(ctx: Context): Promise<void> {
 
   const fullName = msg.text.trim();
 
-  await VoucherParticipantModel.findOneAndUpdate(
+  await UserModel.findOneAndUpdate(
     { telegramId },
     { $set: { telegramId, username: ctx.from?.username, fullName } },
     { upsert: true },
@@ -47,9 +47,9 @@ export async function voucherContactHandler(ctx: Context): Promise<void> {
 
   voucherSession.remove(telegramId);
 
-  await VoucherParticipantModel.findOneAndUpdate(
+  await UserModel.findOneAndUpdate(
     { telegramId },
-    { $set: { phoneNumber, registeredAt: new Date() } },
+    { $set: { phoneNumber, isVoucherParticipant: true } },
   );
 
   await ctx.reply(
