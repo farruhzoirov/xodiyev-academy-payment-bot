@@ -1,7 +1,16 @@
 import { Schema, model, Document } from 'mongoose';
-import { IUser, IMessage, UserState } from '../types';
+import { IUser, IMessage, IFile, UserState } from '../types';
 
 export interface IUserDocument extends Omit<IUser, '_id'>, Document {}
+
+const FileSchema = new Schema<IFile>(
+  {
+    path: { type: String, required: true },
+    type: { type: String, enum: ['photo', 'document'], required: true },
+    uploadedAt: { type: Date, default: () => new Date() },
+  },
+  { _id: false },
+);
 
 const MessageSchema = new Schema<IMessage>(
   {
@@ -41,13 +50,9 @@ const UserSchema = new Schema<IUserDocument>(
       type: String,
       default: '',
     },
-    filePath: {
-      type: String,
-      default: '',
-    },
-    fileType: {
-      type: String,
-      enum: ['photo', 'document'],
+    files: {
+      type: [FileSchema],
+      default: [],
     },
     completedAt: {
       type: Date,

@@ -17,7 +17,7 @@ router.get('/random-user', async (_req: Request, res: Response): Promise<void> =
         state: UserState.COMPLETED,
         completedAt: { $gte: todayStart, $lte: todayEnd },
       },
-      { fullName: 1, phoneNumber: 1, filePath: 1, fileType: 1, _id: 0 },
+      { fullName: 1, phoneNumber: 1, files: 1, _id: 0 },
     );
 
     if (todaysUsers.length === 0) {
@@ -31,8 +31,11 @@ router.get('/random-user', async (_req: Request, res: Response): Promise<void> =
     res.json({
       fullName: user.fullName,
       phoneNumber: user.phoneNumber,
-      filePath: user.filePath,
-      fileType: user.fileType,
+      files: user.files.map((f) => ({
+        path: f.path,
+        type: f.type,
+        uploadedAt: f.uploadedAt,
+      })),
     });
   } catch (err) {
     console.error('Error fetching random user:', err);

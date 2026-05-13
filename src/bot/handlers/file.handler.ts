@@ -42,7 +42,8 @@ export async function fileHandler(ctx: Context): Promise<void> {
 
   const user = await UserModel.findOne({ telegramId });
 
-  if (!user || user.state !== UserState.WAITING_PAYMENT) {
+  const acceptableStates = [UserState.WAITING_PAYMENT, UserState.COMPLETED];
+  if (!user || !acceptableStates.includes(user.state)) {
     const replyText = 'Boshlash uchun /start yuboring.';
     await ctx.reply(replyText);
     await logMessage(telegramId, 'bot', replyText);
@@ -113,20 +114,23 @@ export async function fileHandler(ctx: Context): Promise<void> {
     return;
   }
 
+  const isFirstFile = user.state === UserState.WAITING_PAYMENT;
+
   await UserModel.findOneAndUpdate(
     { telegramId },
     {
-      $set: {
-        filePath: relativeFilePath,
-        fileType,
-        completedAt: new Date(),
-        state: UserState.COMPLETED,
+      $push: {
+        files: { path: relativeFilePath, type: fileType, uploadedAt: new Date() },
       },
+      ...(isFirstFile && {
+        $set: { state: UserState.COMPLETED, completedAt: new Date() },
+      }),
     },
   );
 
-  const replyText =
-    'To\'lovingiz qabul qilindi! Rahmat. Jamoamiz tez orada ko\'rib chiqadi.';
+  const replyText = isFirstFile
+    ? 'To\'lovingiz qabul qilindi! Rahmat. Jamoamiz tez orada ko\'rib chiqadi.'
+    : 'Qo\'shimcha fayl qabul qilindi!';
   await ctx.reply(replyText);
   await logMessage(telegramId, 'bot', replyText);
 }

@@ -11,13 +11,18 @@ export interface IMessage {
   timestamp: Date;
 }
 
+export interface IFile {
+  path: string;
+  type: 'photo' | 'document';
+  uploadedAt: Date;
+}
+
 export interface IUser {
   telegramId: number;
   username?: string;
   fullName: string;
   phoneNumber: string;
-  filePath: string;
-  fileType: 'photo' | 'document';
+  files: IFile[];
   completedAt?: Date;
   state: UserState;
   messages: IMessage[];
