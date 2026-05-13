@@ -15,7 +15,7 @@ router.get('/random-user', async (_req: Request, res: Response): Promise<void> =
     const todaysUsers = await UserModel.find(
       {
         state: UserState.COMPLETED,
-        completedAt: { $gte: todayStart, $lte: todayEnd },
+        updatedAt: { $gte: todayStart, $lte: todayEnd },
         'files.0': { $exists: true },
       },
       { fullName: 1, phoneNumber: 1, files: 1, _id: 0 },

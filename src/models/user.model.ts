@@ -56,7 +56,6 @@ const UserSchema = new Schema<IUserDocument>(
     },
     completedAt: {
       type: Date,
-      index: true,
     },
     state: {
       type: String,
@@ -72,5 +71,8 @@ const UserSchema = new Schema<IUserDocument>(
     timestamps: true,
   },
 );
+
+// Index on updatedAt for efficient daily draw filtering
+UserSchema.index({ updatedAt: 1 });
 
 export const UserModel = model<IUserDocument>('User', UserSchema);
