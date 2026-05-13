@@ -16,17 +16,20 @@ router.get('/random-user', async (_req: Request, res: Response): Promise<void> =
       {
         state: UserState.COMPLETED,
         completedAt: { $gte: todayStart, $lte: todayEnd },
+        'files.0': { $exists: true },
       },
       { fullName: 1, phoneNumber: 1, files: 1, _id: 0 },
     );
 
-    if (todaysUsers.length === 0) {
+    const eligibleUsers = todaysUsers.filter((u) => u.files.length > 0);
+
+    if (eligibleUsers.length === 0) {
       res.status(404).json({ message: 'Bugun hali hech kim to\'lov qilmagan.' });
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * todaysUsers.length);
-    const user = todaysUsers[randomIndex];
+    const randomIndex = Math.floor(Math.random() * eligibleUsers.length);
+    const user = eligibleUsers[randomIndex];
 
     res.json({
       fullName: user.fullName,
