@@ -49,6 +49,10 @@ const UserSchema = new Schema<IUserDocument>(
       type: String,
       enum: ['photo', 'document'],
     },
+    completedAt: {
+      type: Date,
+      index: true,
+    },
     state: {
       type: String,
       enum: Object.values(UserState),

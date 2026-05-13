@@ -18,6 +18,7 @@ export interface IUser {
   phoneNumber: string;
   filePath: string;
   fileType: 'photo' | 'document';
+  completedAt?: Date;
   state: UserState;
   messages: IMessage[];
   createdAt: Date;

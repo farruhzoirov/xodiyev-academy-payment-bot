@@ -6,18 +6,27 @@ const router = Router();
 
 router.get('/random-user', async (_req: Request, res: Response): Promise<void> => {
   try {
-    const completedUsers = await UserModel.find(
-      { state: UserState.COMPLETED },
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const todaysUsers = await UserModel.find(
+      {
+        state: UserState.COMPLETED,
+        completedAt: { $gte: todayStart, $lte: todayEnd },
+      },
       { fullName: 1, phoneNumber: 1, filePath: 1, fileType: 1, _id: 0 },
     );
 
-    if (completedUsers.length === 0) {
-      res.status(404).json({ message: 'No completed users found.' });
+    if (todaysUsers.length === 0) {
+      res.status(404).json({ message: 'Bugun hali hech kim to\'lov qilmagan.' });
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * completedUsers.length);
-    const user = completedUsers[randomIndex];
+    const randomIndex = Math.floor(Math.random() * todaysUsers.length);
+    const user = todaysUsers[randomIndex];
 
     res.json({
       fullName: user.fullName,

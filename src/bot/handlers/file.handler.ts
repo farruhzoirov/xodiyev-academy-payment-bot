@@ -119,6 +119,7 @@ export async function fileHandler(ctx: Context): Promise<void> {
       $set: {
         filePath: relativeFilePath,
         fileType,
+        completedAt: new Date(),
         state: UserState.COMPLETED,
       },
     },
