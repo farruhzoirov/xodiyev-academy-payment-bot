@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
-app.use('/api', usersRouter);
+app.use('/api/tablet', usersRouter);
 app.use('/api/voucher', voucherRouter);
 
 export { app };
