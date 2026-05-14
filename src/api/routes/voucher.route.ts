@@ -26,7 +26,7 @@ router.get(
       res.json({
         fullName: winner.fullName,
         phoneNumber: winner.phoneNumber,
-        files: winner.files.length > 1 ? winner.files : null,
+        files: winner.files.length >= 1 ? winner.files : null,
       });
     } catch (err) {
       console.error("Error fetching random voucher participant:", err);
