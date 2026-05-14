@@ -42,8 +42,28 @@ export async function fileHandler(ctx: Context): Promise<void> {
 
   const user = await UserModel.findOne({ telegramId });
 
-  const acceptableStates = [UserState.WAITING_PAYMENT, UserState.COMPLETED];
-  if (!user || !acceptableStates.includes(user.state)) {
+  if (!user) {
+    const replyText = 'Boshlash uchun /start yuboring.';
+    await ctx.reply(replyText);
+    await logMessage(telegramId, 'bot', replyText);
+    return;
+  }
+
+  if (user.state === UserState.WAITING_NAME) {
+    const replyText = 'Ismingizni yozing 👇';
+    await ctx.reply(replyText);
+    await logMessage(telegramId, 'bot', replyText);
+    return;
+  }
+
+  if (user.state === UserState.WAITING_PHONE) {
+    const replyText = 'Telefon raqamingizni kiriting 📱';
+    await ctx.reply(replyText);
+    await logMessage(telegramId, 'bot', replyText);
+    return;
+  }
+
+  if (![UserState.WAITING_PAYMENT, UserState.COMPLETED].includes(user.state)) {
     const replyText = 'Boshlash uchun /start yuboring.';
     await ctx.reply(replyText);
     await logMessage(telegramId, 'bot', replyText);
@@ -128,7 +148,7 @@ export async function fileHandler(ctx: Context): Promise<void> {
   );
 
   const replyText = isFirstFile
-    ? 'To\'lovingiz qabul qilindi! Rahmat. Jamoamiz tez orada ko\'rib chiqadi.'
+    ? '🎉 Tabriklaymiz! Xaridingiz amalga oshirildi.\n\nTo\'lov cheki tekshirilgach Siz bilan menejerlar 24 soat ichida aloqaga chiqib, kurs yopiq guruhiga qo\'shishadi.\n\nTo\'lov bilan muammo yoki savol bo\'lsa quyidagi telegram akkaunt orqali bog\'laning👇🏻\n\n@xodiyevsatadmin'
     : 'Qo\'shimcha fayl qabul qilindi!';
   await ctx.reply(replyText);
   await logMessage(telegramId, 'bot', replyText);

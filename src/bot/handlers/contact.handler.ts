@@ -25,12 +25,23 @@ export async function contactHandler(ctx: Context): Promise<void> {
     return;
   }
 
+  // Check if this phone number is already used by another user
+  const existingWithPhone = await UserModel.findOne({
+    phoneNumber,
+    telegramId: { $ne: telegramId },
+  });
+
+  if (existingWithPhone) {
+    const replyText = 'Bu telefon raqam allaqachon ro\'yxatdan o\'tgan. Iltimos, boshqa raqam bilan /start bosing.';
+    await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
+    await logMessage(telegramId, 'bot', replyText);
+    return;
+  }
+
   await UserModel.findOneAndUpdate(
     { telegramId },
     { $set: { phoneNumber, state: UserState.WAITING_PAYMENT } },
   );
-
-  await ctx.reply('Rahmat!', { reply_markup: { remove_keyboard: true } });
 
   await sendPaymentInfo(ctx);
 
