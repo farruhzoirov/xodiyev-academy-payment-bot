@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { usersRouter } from './routes/users.route';
 import { voucherRouter } from './routes/voucher.route';
+import { listRouter } from './routes/list.route';
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
 app.use('/api/tablet', usersRouter);
 app.use('/api/voucher', voucherRouter);
+app.use('/api', listRouter);
 
 export { app };

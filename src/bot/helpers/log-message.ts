@@ -1,8 +1,8 @@
-import { UserModel } from '../../models/user.model';
+import { UserModel } from "../../models/user.model";
 
 export async function logMessage(
   telegramId: number,
-  role: 'user' | 'bot',
+  role: "user" | "bot",
   content: string,
 ): Promise<void> {
   await UserModel.findOneAndUpdate(
