@@ -52,7 +52,7 @@ export async function fileHandler(ctx: Context): Promise<void> {
 
   let fileId: string;
   let fileSize: number | undefined;
-  let originalFilename: string;
+  let fileExt: string;
   let fileType: 'photo' | 'document';
 
   const msg = ctx.message as
@@ -63,23 +63,23 @@ export async function fileHandler(ctx: Context): Promise<void> {
   if (!msg) return;
 
   if ('photo' in msg && msg.photo && msg.photo.length > 0) {
-    // Use the largest photo size
     const photos = msg.photo as PhotoSize[];
     const largest = photos.reduce((prev, curr) =>
       (curr.file_size ?? 0) > (prev.file_size ?? 0) ? curr : prev,
     );
-    fileId = largest.file_id;
+    fileId   = largest.file_id;
     fileSize = largest.file_size;
-    originalFilename = `photo_${Date.now()}.jpg`;
+    fileExt  = 'jpg';
     fileType = 'photo';
     await logMessage(telegramId, 'user', '[photo uploaded]');
   } else if ('document' in msg && msg.document) {
-    const doc = msg.document;
-    fileId = doc.file_id;
-    fileSize = doc.file_size;
-    originalFilename = doc.file_name ?? `document_${Date.now()}`;
-    fileType = 'document';
-    await logMessage(telegramId, 'user', `[document uploaded: ${originalFilename}]`);
+    const doc      = msg.document;
+    fileId         = doc.file_id;
+    fileSize       = doc.file_size;
+    const original = doc.file_name ?? '';
+    fileExt        = path.extname(original).replace('.', '').toLowerCase() || 'pdf';
+    fileType       = 'document';
+    await logMessage(telegramId, 'user', `[document uploaded: ${original || 'file'}]`);
   } else {
     return;
   }
@@ -98,11 +98,10 @@ export async function fileHandler(ctx: Context): Promise<void> {
     fs.mkdirSync(UPLOADS_DIR, { recursive: true });
   }
 
-  const timestamp = Date.now();
-  const safeFilename = originalFilename.replace(/[^a-zA-Z0-9._-]/g, '_');
-  const destFilename = `${telegramId}_${timestamp}_${safeFilename}`;
-  const destPath = path.join(UPLOADS_DIR, destFilename);
-  const relativeFilePath = path.join('uploads', destFilename);
+  const timestamp    = Date.now();
+  const destFilename = `${telegramId}_${timestamp}.${fileExt}`;
+  const destPath     = path.join(UPLOADS_DIR, destFilename);
+  const relativeFilePath = `uploads/${destFilename}`;
 
   try {
     await downloadFile(fileId, destPath, ctx);
