@@ -3,6 +3,7 @@ import { Message } from 'telegraf/typings/core/types/typegram';
 import { UserModel } from '../../models/user.model';
 import { UserState } from '../../types';
 import { logMessage } from '../helpers/log-message';
+import { sendPaymentInfo } from '../helpers/send-payment-info';
 
 export async function contactHandler(ctx: Context): Promise<void> {
   const telegramId = ctx.from?.id;
@@ -29,8 +30,9 @@ export async function contactHandler(ctx: Context): Promise<void> {
     { $set: { phoneNumber, state: UserState.WAITING_PAYMENT } },
   );
 
-  const replyText =
-    'Rahmat! Endi to\'lov screenshotini (rasm) yoki PDF hujjatini yuboring.';
-  await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
-  await logMessage(telegramId, 'bot', replyText);
+  await ctx.reply('Rahmat!', { reply_markup: { remove_keyboard: true } });
+
+  await sendPaymentInfo(ctx);
+
+  await logMessage(telegramId, 'bot', '[payment info sent]');
 }
