@@ -4,7 +4,7 @@ import { Context } from 'telegraf';
 
 const ASSETS_DIR = path.resolve(process.cwd(), 'assets');
 
-export const PAYMENT_TEXT =
+const PAYMENT_BODY =
 `💳 <b>To'lov kartalari</b>
 
 ━━━━━━━━━━━━━━━━━━━━
@@ -21,7 +21,9 @@ export const PAYMENT_TEXT =
 ━━━━━━━━━━━━━━━━━━━━
 📌 <b>Diqqat!</b> To'lov qilganingizdan so'ng, to'lov chekini shu botga yuborishni unutmang!`;
 
-export async function sendPaymentInfo(ctx: Context): Promise<void> {
+export async function sendPaymentInfo(ctx: Context, header?: string): Promise<void> {
+  const caption = header ? `${header}\n\n${PAYMENT_BODY}` : PAYMENT_BODY;
+
   await ctx.replyWithMediaGroup([
     {
       type: 'photo',
@@ -30,7 +32,7 @@ export async function sendPaymentInfo(ctx: Context): Promise<void> {
     {
       type: 'photo',
       media: Input.fromLocalFile(path.join(ASSETS_DIR, 'card2.jpg')),
-      caption: PAYMENT_TEXT,
+      caption,
       parse_mode: 'HTML',
     },
   ]);

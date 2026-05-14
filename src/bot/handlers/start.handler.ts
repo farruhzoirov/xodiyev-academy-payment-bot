@@ -10,9 +10,10 @@ export async function startHandler(ctx: Context): Promise<void> {
 
   const existing = await UserModel.findOne({ telegramId });
 
-  // Already completed — send payment info again
+  // Already completed — remind and resend payment info
   if (existing?.state === UserState.COMPLETED) {
-    await sendPaymentInfo(ctx);
+    const header = `✅ <b>Siz allaqachon ro'yxatdan o'tgansiz!</b>\n\nQo'shimcha to'lov screenshoti yubormoqchi bo'lsangiz — quyidagi kartalardan biriga to'lov qiling va chekni yuboring.`;
+    await sendPaymentInfo(ctx, header);
     await logMessage(telegramId, 'bot', '[payment info sent]');
     return;
   }
@@ -26,9 +27,8 @@ export async function startHandler(ctx: Context): Promise<void> {
   }
 
   if (existing?.state === UserState.WAITING_PAYMENT) {
-    const replyText = 'Siz ro\'yxatdan o\'tish jarayonidasiz. Iltimos, to\'lov screenshotini yoki PDF hujjatini yuboring.';
-    await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
-    await logMessage(telegramId, 'bot', replyText);
+    await sendPaymentInfo(ctx);
+    await logMessage(telegramId, 'bot', '[payment info sent]');
     return;
   }
 
