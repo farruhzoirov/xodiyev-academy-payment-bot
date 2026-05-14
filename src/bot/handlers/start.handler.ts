@@ -2,6 +2,7 @@ import { Context } from 'telegraf';
 import { UserModel } from '../../models/user.model';
 import { UserState } from '../../types';
 import { logMessage } from '../helpers/log-message';
+import { sendPaymentInfo } from '../helpers/send-payment-info';
 
 export async function startHandler(ctx: Context): Promise<void> {
   const telegramId = ctx.from?.id;
@@ -9,13 +10,10 @@ export async function startHandler(ctx: Context): Promise<void> {
 
   const existing = await UserModel.findOne({ telegramId });
 
-  // Already completed — remind and offer to upload more
+  // Already completed — send payment info again
   if (existing?.state === UserState.COMPLETED) {
-    const replyText =
-      `Salom, ${existing.fullName}! Siz allaqachon ro'yxatdan o'tgansiz ✅\n\n` +
-      `Qo'shimcha to'lov screenshoti yoki PDF yubormoqchi bo'lsangiz — hoziroq yuboring.`;
-    await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
-    await logMessage(telegramId, 'bot', replyText);
+    await sendPaymentInfo(ctx);
+    await logMessage(telegramId, 'bot', '[payment info sent]');
     return;
   }
 

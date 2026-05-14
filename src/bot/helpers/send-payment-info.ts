@@ -4,17 +4,22 @@ import { Context } from 'telegraf';
 
 const ASSETS_DIR = path.resolve(process.cwd(), 'assets');
 
-const PAYMENT_TEXT = `💳 To'lov rekvizitlari
+export const PAYMENT_TEXT =
+`💳 <b>To'lov kartalari</b>
 
-📦 Tariflar:
-• Standart — 449,000 so'm
-• Premium — 899,000 so'm
+━━━━━━━━━━━━━━━━━━━━
+💰 <b>Tariflar:</b>
+• Standart — <b>449 000 so'm</b>
+• Premium — <b>899 000 so'm</b>
+━━━━━━━━━━━━━━━━━━━━
 
-💳 Karta raqamlari:
-5614 6812 8102 6314 — XODIYEV LUTFULLOXON
-5614 6812 5943 3831 — XODIYEV LUTFULLOXON
+🏦 <b>Karta raqamlari</b> <i>(bosib nusxa oling):</i>
+<code>5614 6812 8102 6314</code>
+<code>5614 6812 5943 3831</code>
+👤 XODIYEV LUTFULLOXON
 
-⚠️ To'lov qilganingizdan so'ng, to'lov chekini shu botga yuborishni unutmang!`;
+━━━━━━━━━━━━━━━━━━━━
+📌 <b>Diqqat!</b> To'lov qilganingizdan so'ng, to'lov chekini shu botga yuborishni unutmang!`;
 
 export async function sendPaymentInfo(ctx: Context): Promise<void> {
   await ctx.replyWithMediaGroup([
@@ -26,6 +31,7 @@ export async function sendPaymentInfo(ctx: Context): Promise<void> {
       type: 'photo',
       media: Input.fromLocalFile(path.join(ASSETS_DIR, 'card2.jpg')),
       caption: PAYMENT_TEXT,
+      parse_mode: 'HTML',
     },
   ]);
 }
