@@ -51,7 +51,7 @@ export async function startHandler(ctx: Context): Promise<void> {
     { upsert: true, new: true },
   );
 
-  const replyText = 'Xush kelibsiz! Iltimos, to\'liq ism familiyangizni yuboring.';
+  const replyText = 'Ismingizni kiriting👇🏻';
   await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
   await logMessage(telegramId, 'bot', replyText);
 }
