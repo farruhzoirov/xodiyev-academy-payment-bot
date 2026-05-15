@@ -14,7 +14,7 @@ export async function fallbackHandler(ctx: Context): Promise<void> {
 
   switch (user.state) {
     case UserState.WAITING_NAME:
-      replyText = 'Ismingizni yozing 👇';
+      replyText = "To'liq ismingizni yozing 👇";
       break;
     case UserState.WAITING_PHONE:
       replyText = 'Telefon raqamingizni kiriting 📱';
