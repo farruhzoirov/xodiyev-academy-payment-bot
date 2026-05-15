@@ -19,9 +19,6 @@ export async function fallbackHandler(ctx: Context): Promise<void> {
     case UserState.WAITING_PHONE:
       replyText = 'Telefon raqamingizni kiriting 📱';
       break;
-    case UserState.WAITING_PAYMENT:
-      replyText = "Iltimos, to'lov screenshotini yoki PDF chekini yuboring.";
-      break;
   }
 
   if (replyText) {

@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { UserModel } from "../../models/user.model";
+import { UserState } from "../../types";
 
 const router = Router();
 
@@ -8,11 +9,8 @@ router.get(
   async (_req: Request, res: Response): Promise<void> => {
     try {
       const participants = await UserModel.find(
-        {
-          fullName: { $exists: true, $ne: "" },
-          phoneNumber: { $exists: true, $ne: "" },
-        },
-        { fullName: 1, phoneNumber: 1, _id: 0, files: 1 },
+        { state: UserState.COMPLETED },
+        { fullName: 1, phoneNumber: 1, _id: 0 },
       );
 
       if (participants.length === 0) {
@@ -26,7 +24,6 @@ router.get(
       res.json({
         fullName: winner.fullName,
         phoneNumber: winner.phoneNumber,
-        files: winner.files.length >= 1 ? winner.files : null,
       });
     } catch (err) {
       console.error("Error fetching random voucher participant:", err);

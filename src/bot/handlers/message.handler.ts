@@ -4,7 +4,6 @@ import { UserModel } from '../../models/user.model';
 import { UserState } from '../../types';
 import { phoneKeyboard } from '../keyboards/phone.keyboard';
 import { logMessage } from '../helpers/log-message';
-import { sendPaymentInfo } from '../helpers/send-payment-info';
 
 export async function messageHandler(ctx: Context): Promise<void> {
   const telegramId = ctx.from?.id;
@@ -20,11 +19,6 @@ export async function messageHandler(ctx: Context): Promise<void> {
   let user = await UserModel.findOne({ telegramId });
 
   if (!user) {
-    user = await UserModel.create({
-      telegramId,
-      username: ctx.from?.username,
-      state: UserState.WAITING_NAME,
-    });
     const replyText = 'Boshlash uchun /start yuboring.';
     await ctx.reply(replyText);
     await logMessage(telegramId, 'bot', replyText);
@@ -68,25 +62,17 @@ export async function messageHandler(ctx: Context): Promise<void> {
 
       await UserModel.findOneAndUpdate(
         { telegramId },
-        { $set: { phoneNumber: text, state: UserState.WAITING_PAYMENT } },
+        { $set: { phoneNumber: text, state: UserState.COMPLETED, completedAt: new Date() } },
       );
 
-      await sendPaymentInfo(ctx);
-      await logMessage(telegramId, 'bot', '[payment info sent]');
-      break;
-    }
-
-    case UserState.WAITING_PAYMENT: {
-      const replyText =
-        "Iltimos, to'lov screenshotini yoki PDF chekini yuboring.";
-      await ctx.reply(replyText);
+      const replyText = "Ma'lumotlaringiz qabul qilindi! Tez orada g'olibni aniqlaymiz 🎉";
+      await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
       await logMessage(telegramId, 'bot', replyText);
       break;
     }
 
     case UserState.COMPLETED: {
-      const replyText =
-        "Siz allaqachon ro'yxatdan o'tgansiz. Qaytadan boshlash uchun /start yuboring.";
+      const replyText = "Siz allaqachon ro'yxatdan o'tgansiz. Qaytadan boshlash uchun /start yuboring.";
       await ctx.reply(replyText);
       await logMessage(telegramId, 'bot', replyText);
       break;

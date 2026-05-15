@@ -3,7 +3,6 @@ import { Message } from 'telegraf/typings/core/types/typegram';
 import { UserModel } from '../../models/user.model';
 import { UserState } from '../../types';
 import { logMessage } from '../helpers/log-message';
-import { sendPaymentInfo } from '../helpers/send-payment-info';
 
 export async function contactHandler(ctx: Context): Promise<void> {
   const telegramId = ctx.from?.id;
@@ -25,14 +24,13 @@ export async function contactHandler(ctx: Context): Promise<void> {
     return;
   }
 
-  // Check if this phone number is already used by another user
   const existingWithPhone = await UserModel.findOne({
     phoneNumber,
     telegramId: { $ne: telegramId },
   });
 
   if (existingWithPhone) {
-    const replyText = 'Bu telefon raqam allaqachon ro\'yxatdan o\'tgan. Iltimos, boshqa raqam bilan /start bosing.';
+    const replyText = "Bu telefon raqam allaqachon ro'yxatdan o'tgan. Iltimos, boshqa raqam bilan /start bosing.";
     await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
     await logMessage(telegramId, 'bot', replyText);
     return;
@@ -40,10 +38,10 @@ export async function contactHandler(ctx: Context): Promise<void> {
 
   await UserModel.findOneAndUpdate(
     { telegramId },
-    { $set: { phoneNumber, state: UserState.WAITING_PAYMENT } },
+    { $set: { phoneNumber, state: UserState.COMPLETED, completedAt: new Date() } },
   );
 
-  await sendPaymentInfo(ctx);
-
-  await logMessage(telegramId, 'bot', '[payment info sent]');
+  const replyText = "Ma'lumotlaringiz qabul qilindi! Tez orada g'olibni aniqlaymiz 🎉";
+  await ctx.reply(replyText, { reply_markup: { remove_keyboard: true } });
+  await logMessage(telegramId, 'bot', replyText);
 }

@@ -17,6 +17,7 @@ router.get('/users', async (req: Request, res: Response): Promise<void> => {
           telegramId: 0,
           username: 0,
           messages: 0,
+          files: 0,
         },
       )
         .sort({ createdAt: -1 })
